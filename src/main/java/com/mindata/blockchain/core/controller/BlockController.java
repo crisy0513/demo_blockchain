@@ -99,7 +99,7 @@ public class BlockController {
         instructionBody.setOperation(Operation.ADD);
         instructionBody.setTable("message");
         String content = dh+tm+yw;
-        instructionBody.setJson(SM3Utils.encrypt(content));
+        instructionBody.setJson("\"content\":\""+SM3Utils.encrypt(content)+"\"");
         /*instructionBody.setPublicKey("A8WLqHTjcT/FQ2IWhIePNShUEcdCzu5dG+XrQU8OMu54");
         instructionBody.setPrivateKey("yScdp6fNgUU+cRUTygvJG4EBhDKmOMRrK4XJ9mKVQJ8=");*/
         instructionBody.setPublicKey(publicKey);
