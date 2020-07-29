@@ -10,7 +10,6 @@ import com.mindata.blockchain.core.manager.SyncManager;
 import com.mindata.blockchain.core.manager.DbBlockManager;
 import com.mindata.blockchain.core.model.SyncEntity;
 import com.mindata.blockchain.core.service.InstructionService;
-import com.mindata.blockchain.core.sqlparser.InstructionParser;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -29,13 +28,9 @@ import java.util.List;
 @Component
 public class SqliteManager {
     @Resource
-    private InstructionParser instructionParser;
-    @Resource
     private SyncManager syncManager;
     @Resource
     private DbBlockManager dbBlockManager;
-    @Resource
-    private InstructionService instructionService;
 
     private Logger logger = LoggerFactory.getLogger(getClass());
 
@@ -82,7 +77,7 @@ public class SqliteManager {
         for (Instruction instruction : instructions) {
             instruction.setOldJson(instruction.getJson());
         }
-        doSqlParse(instructions);
+        //doSqlParse(instructions);
 
         //保存已同步的进度
         SyncEntity syncEntity = new SyncEntity();
@@ -90,29 +85,6 @@ public class SqliteManager {
         syncManager.save(syncEntity);
     }
 
-    /**
-     * 执行回滚一个block
-     *
-     * @param block
-     *         block
-     */
-    public void rollBack(Block block) {
-        List<Instruction> instructions = block.getBlockBody().getInstructions();
-        int size = instructions.size();
-        //需要对语句集合进行反转，然后执行和execute一样的操作
-        List<InstructionReverse> instructionReverses = new ArrayList<>(size);
-        for (int i = size - 1; i >= 0; i--) {
-            instructionReverses.add(instructionService.buildReverse(instructions.get(i)));
-        }
-        doSqlParse(instructionReverses);
-    }
-
-    private <T extends InstructionBase> void doSqlParse(List<T> instructions) {
-        for (InstructionBase instruction : instructions) {
-            instructionParser.parse(instruction);
-        }
-    }
-    
     /**
      * 测试block的代码是否能正确执行
      * 

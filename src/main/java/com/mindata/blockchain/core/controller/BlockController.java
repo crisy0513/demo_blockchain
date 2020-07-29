@@ -12,9 +12,7 @@ import com.mindata.blockchain.core.bean.BaseData;
 import com.mindata.blockchain.core.bean.ResultGenerator;
 import com.mindata.blockchain.core.event.DbSyncEvent;
 import com.mindata.blockchain.core.manager.DbBlockManager;
-import com.mindata.blockchain.core.manager.MessageManager;
 import com.mindata.blockchain.core.manager.SyncManager;
-import com.mindata.blockchain.core.model.MessageEntity;
 import com.mindata.blockchain.core.requestbody.BlockRequestBody;
 import com.mindata.blockchain.core.requestbody.InstructionBody;
 import com.mindata.blockchain.core.service.BlockService;
@@ -55,8 +53,6 @@ public class BlockController {
     private InstructionService instructionService;
     @Resource
     private SyncManager syncManager;
-    @Resource
-    private MessageManager messageManager;
     @Resource
     private SqliteManager sqliteManager;
     @Resource
@@ -99,7 +95,7 @@ public class BlockController {
         instructionBody.setOperation(Operation.ADD);
         instructionBody.setTable("message");
         String content = dh+tm+yw;
-        instructionBody.setJson("\"content\":\""+SM3Utils.encrypt(content)+"\"");
+        instructionBody.setJson("{\"content\":\"" + SM3Utils.encrypt(content) + "\"}");
         /*instructionBody.setPublicKey("A8WLqHTjcT/FQ2IWhIePNShUEcdCzu5dG+XrQU8OMu54");
         instructionBody.setPrivateKey("yScdp6fNgUU+cRUTygvJG4EBhDKmOMRrK4XJ9mKVQJ8=");*/
         instructionBody.setPublicKey(publicKey);
@@ -163,9 +159,9 @@ public class BlockController {
     	instructionBody.setOperation(Operation.DELETE);
     	instructionBody.setTable("message");
     	instructionBody.setInstructionId(id);
-        MessageEntity message=messageManager.findById(id);
-        String content=ObjectUtils.isEmpty(message)?"":message.getContent();
-        instructionBody.setJson("{\"content\":\"" + content + "\"}");
+//        MessageEntity message=messageManager.findById(id);
+//        String content=ObjectUtils.isEmpty(message)?"":message.getContent();
+//        instructionBody.setJson("{\"content\":\"" + content + "\"}");
     	 /*instructionBody.setPublicKey("A8WLqHTjcT/FQ2IWhIePNShUEcdCzu5dG+XrQU8OMu54");
         instructionBody.setPrivateKey("yScdp6fNgUU+cRUTygvJG4EBhDKmOMRrK4XJ9mKVQJ8=");*/
         instructionBody.setPublicKey(publicKey);
@@ -182,23 +178,6 @@ public class BlockController {
     	return ResultGenerator.genSuccessResult(blockService.addBlock(blockRequestBody));
     }
 
-    /**
-     * 查询已落地的sqlite里的所有数据
-     */
-    @ApiOperation(value = "查询区块链数据", notes = "查询区块链数据", httpMethod = "GET", response = BaseData.class)
-    @GetMapping("sqlite")
-    public BaseData sqlite() {
-        return ResultGenerator.genSuccessResult(messageManager.findAll());
-    }
-
-    /**
-     * 查询已落地的sqlite里content字段
-     */
-    @ApiOperation(value = "查询区块链内容", notes = "查询区块链内容", httpMethod = "GET", response = BaseData.class)
-    @GetMapping("sqlite/content")
-    public BaseData content() {
-        return ResultGenerator.genSuccessResult(messageManager.findAllContent());
-    }
 
     /**
      * 获取最后一个block的信息
