@@ -1,6 +1,7 @@
 package com.mindata.blockchain.core.sqlite.config;
 
 import com.mysql.cj.jdbc.MysqlDataSource;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceBuilder;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -15,13 +16,20 @@ import javax.sql.DataSource;
 @Configuration
 public class DataSourceConfiguration {
 
+    @Value("${jdbc.url}")
+    String url;
+
+    @Value("${jdbc.username}")
+    String username;
+    @Value("${jdbc.password}")
+    String password;
     @Bean(destroyMethod = "", name = "EmbeddeddataSource")
     public DataSource dataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.mysql.cj.jdbc.Driver");
-        dataSourceBuilder.username("greatwall");
-        dataSourceBuilder.password("greatwall");
-        dataSourceBuilder.url("jdbc:mysql://10.168.1.186:3306/blockchain_4?useUnicode=true&autoReconnect=true&useSSL=false&characterEncoding=UTF-8&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=GMT%2b8");
+        dataSourceBuilder.username(username);
+        dataSourceBuilder.password(password);
+        dataSourceBuilder.url(url);
         dataSourceBuilder.type(MysqlDataSource.class);
         return dataSourceBuilder.build();
     }

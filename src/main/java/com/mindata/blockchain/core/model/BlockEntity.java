@@ -13,6 +13,7 @@ public class BlockEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
+    @Column(length = 2550)
     private String svalue;
     private String skey;
     private String shash;

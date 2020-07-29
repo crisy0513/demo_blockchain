@@ -16,6 +16,7 @@ import com.mindata.blockchain.core.manager.SyncManager;
 import com.mindata.blockchain.core.requestbody.BlockRequestBody;
 import com.mindata.blockchain.core.requestbody.InstructionBody;
 import com.mindata.blockchain.core.service.BlockService;
+import com.mindata.blockchain.core.service.DaService;
 import com.mindata.blockchain.core.service.InstructionService;
 import com.mindata.blockchain.core.sqlite.SqliteManager;
 import com.mindata.blockchain.socket.body.RpcBlockBody;
@@ -54,13 +55,14 @@ public class BlockController {
     @Resource
     private SyncManager syncManager;
     @Resource
-    private SqliteManager sqliteManager;
-    @Resource
     private BlockChecker blockChecker;
     @Value("${publicKey:A8WLqHTjcT/FQ2IWhIePNShUEcdCzu5dG+XrQU8OMu54}")
     private String publicKey;
     @Value("${privateKey:yScdp6fNgUU+cRUTygvJG4EBhDKmOMRrK4XJ9mKVQJ8=}")
     private String privateKey;
+    @Resource
+    private DaService daService;
+
 
     /**
      * 添加一个block，需要先在InstructionController构建1-N个instruction指令，然后调用该接口生成Block
@@ -91,6 +93,7 @@ public class BlockController {
                            @ApiParam(name = "tm", value = "提名", required = true)  @RequestParam(value = "tm") String tm,
                            @ApiParam(name = "yw", value = "原文", required = true)  @RequestParam(value = "yw") String yw
                            ) throws Exception {
+        daService.addDa(dh, tm, yw);
         InstructionBody instructionBody = new InstructionBody();
         instructionBody.setOperation(Operation.ADD);
         instructionBody.setTable("message");
@@ -109,8 +112,6 @@ public class BlockController {
 
         blockRequestBody.setBlockBody(blockBody);
 
-        Block block = new Block();
-//        sqliteManager.execute(block);
         return ResultGenerator.genSuccessResult(blockService.addBlock(blockRequestBody));
     }
     
