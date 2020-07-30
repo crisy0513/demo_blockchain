@@ -3,13 +3,11 @@ package com.mindata.blockchain.core.sqlite;
 import com.mindata.blockchain.ApplicationContextProvider;
 import com.mindata.blockchain.block.Block;
 import com.mindata.blockchain.block.Instruction;
-import com.mindata.blockchain.block.InstructionBase;
-import com.mindata.blockchain.block.InstructionReverse;
 import com.mindata.blockchain.core.event.DbSyncEvent;
 import com.mindata.blockchain.core.manager.SyncManager;
 import com.mindata.blockchain.core.manager.DbBlockManager;
 import com.mindata.blockchain.core.model.SyncEntity;
-import com.mindata.blockchain.core.service.InstructionService;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.event.EventListener;
@@ -17,7 +15,6 @@ import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.annotation.Resource;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -75,7 +72,9 @@ public class SqliteManager {
         List<Instruction> instructions = block.getBlockBody().getInstructions();
         //InstructionParserImpl类里面执行的是InstructionBase，需要转成InstructionBase
         for (Instruction instruction : instructions) {
-            instruction.setOldJson(instruction.getJson());
+            if(StringUtils.isEmpty(instruction.getOldJson())){
+                instruction.setOldJson(instruction.getJson());
+            }
         }
         //doSqlParse(instructions);
 

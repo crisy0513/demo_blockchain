@@ -14,6 +14,7 @@ import com.mindata.blockchain.common.exception.ErrorNum;
 import com.mindata.blockchain.common.exception.TrustSDKException;
 import com.mindata.blockchain.block.PairKey;
 import org.apache.commons.codec.binary.Base64;
+import org.junit.jupiter.api.Test;
 import org.springframework.util.StringUtils;
 
 import java.io.UnsupportedEncodingException;

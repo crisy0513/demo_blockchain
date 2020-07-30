@@ -13,4 +13,5 @@ import java.util.List;
  */
 public interface DaRespository extends JpaRepository<DaEntity, Long> {
 
+    DaEntity findById(Long id);
 }

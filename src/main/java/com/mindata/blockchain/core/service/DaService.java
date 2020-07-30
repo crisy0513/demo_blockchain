@@ -45,4 +45,18 @@ public class DaService {
         return  daEntity;
     }
 
+    public DaEntity findById(Long id){
+        return daRespository.findById(id);
+    }
+
+    @Transactional
+    public void update(Long id,String dh,String tm,String yw){
+        DaEntity daEntity = new DaEntity();
+        daEntity.setId(id);
+        daEntity.setDh(dh);
+        daEntity.setTm(tm);
+        daEntity.setYw(yw);
+        daRespository.save(daEntity);
+    }
+
 }

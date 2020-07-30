@@ -13,6 +13,7 @@ import com.mindata.blockchain.core.bean.ResultGenerator;
 import com.mindata.blockchain.core.event.DbSyncEvent;
 import com.mindata.blockchain.core.manager.DbBlockManager;
 import com.mindata.blockchain.core.manager.SyncManager;
+import com.mindata.blockchain.core.model.DaEntity;
 import com.mindata.blockchain.core.requestbody.BlockRequestBody;
 import com.mindata.blockchain.core.requestbody.InstructionBody;
 import com.mindata.blockchain.core.service.BlockService;
@@ -118,19 +119,28 @@ public class BlockController {
     /**
      * 测试生成一个update:Block，公钥私钥可以通过PairKeyController来生成
      * @param id 更新的主键
-     * @param content
-     * sql内容
+     * @param
+     *
      */
     @GetMapping("update")
     @ApiOperation(value = "更新区块链内容", notes = "根据ID更新区块链内容", httpMethod = "GET", response = BaseData.class)
-    public BaseData testUpdate(@ApiParam(name = "id", value = "区块链信息编号", required = true) @RequestParam(value = "id",required = true) String id,
-                               @ApiParam(name = "content", value = "区块链内容", required = true) @RequestParam(value = "content") String content) throws Exception {
-    	if(StringUtils.isBlank(id)) ResultGenerator.genSuccessResult("主键不可为空");
+    public BaseData testUpdate(@ApiParam(name = "id", value = "主键", required = true) @RequestParam(value = "id",required = true) Long id,
+                               @ApiParam(name = "dh", value = "档号", required = true)  @RequestParam(value = "dh") String dh,
+                               @ApiParam(name = "tm", value = "提名", required = true)  @RequestParam(value = "tm") String tm,
+                               @ApiParam(name = "yw", value = "原文", required = true)  @RequestParam(value = "yw") String yw) throws Exception {
+    	if(id == null) return ResultGenerator.genSuccessResult("主键不可为空");
     	InstructionBody instructionBody = new InstructionBody();
     	instructionBody.setOperation(Operation.UPDATE);
     	instructionBody.setTable("message");
-    	instructionBody.setInstructionId(id);
-    	instructionBody.setJson("{\"content\":\"" + content + "\"}");
+        String content = dh+tm+yw;
+        instructionBody.setJson("{\"content\":\"" + SM3Utils.encrypt(content) + "\"}");
+        DaEntity daEntity = daService.findById(id);
+        if (daEntity!=null){
+            instructionBody.setOldJson("{\"content\":\"" + SM3Utils.encrypt(daEntity.getDh()+daEntity.getTm()+daEntity.getYw()) + "\"}");
+        }else{
+            return ResultGenerator.genSuccessResult("主键查不到对应记录，请检查该档案是否存在");
+        }
+        daService.update(id,dh,tm,yw);
     	 /*instructionBody.setPublicKey("A8WLqHTjcT/FQ2IWhIePNShUEcdCzu5dG+XrQU8OMu54");
         instructionBody.setPrivateKey("yScdp6fNgUU+cRUTygvJG4EBhDKmOMRrK4XJ9mKVQJ8=");*/
         instructionBody.setPublicKey(publicKey);
@@ -210,7 +220,6 @@ public class BlockController {
      * null - 通过
      * hash - 第一个异常hash
      */
-    @ApiIgnore
     @ApiOperation(value = "全量检测区块是否正常", notes = "全量检测区块是否正常", httpMethod = "GET", response = BaseData.class)
     @GetMapping("check")
     public BaseData check() {
