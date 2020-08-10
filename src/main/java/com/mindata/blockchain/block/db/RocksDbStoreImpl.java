@@ -7,6 +7,8 @@ import com.mindata.blockchain.core.model.BlockEntity;
 //import org.rocksdb.RocksDB;
 //import org.rocksdb.RocksDBException;
 import com.mindata.blockchain.core.repository.MysqlDb;
+import jodd.util.StringUtil;
+import org.apache.commons.lang3.StringUtils;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
@@ -48,8 +50,12 @@ public class RocksDbStoreImpl implements DbStore {
         BlockEntity blockEntity = new BlockEntity();
         blockEntity.setSkey(key);
         blockEntity.setSvalue(Json.toJson(block));
-        JSONObject jsonObject = JSONObject.parseObject(block.getBlockBody().getInstructions().get(0).getJson());
-        blockEntity.setShash(jsonObject.getString("content"));
+        JSONObject newjson = JSONObject.parseObject(block.getBlockBody().getInstructions().get(0).getJson());
+        if(StringUtils.isNotEmpty(block.getBlockBody().getInstructions().get(0).getOldJson())){
+            JSONObject oldjson = JSONObject.parseObject(block.getBlockBody().getInstructions().get(0).getOldJson());
+            blockEntity.setSoldhash(oldjson.getString("content"));
+        }
+        blockEntity.setShash(newjson.getString("content"));
         mysqlDb.save(blockEntity);
     }
 
@@ -79,6 +85,12 @@ public class RocksDbStoreImpl implements DbStore {
     @Override
     public List<BlockEntity> getByHash(String hash) {
         List<BlockEntity> result = mysqlDb.findByShash(hash);
+        return result;
+    }
+
+    @Override
+    public List<BlockEntity> getByOldHash(String encrypt) {
+        List<BlockEntity> result = mysqlDb.findBySoldhash(encrypt);
         return result;
     }
 

@@ -71,11 +71,11 @@ public class SqliteManager {
     public void execute(Block block) {
         List<Instruction> instructions = block.getBlockBody().getInstructions();
         //InstructionParserImpl类里面执行的是InstructionBase，需要转成InstructionBase
-        for (Instruction instruction : instructions) {
-            if(StringUtils.isEmpty(instruction.getOldJson())){
-                instruction.setOldJson(instruction.getJson());
-            }
-        }
+//        for (Instruction instruction : instructions) {
+//            if(StringUtils.isEmpty(instruction.getOldJson())){
+//                instruction.setOldJson(instruction.getJson());
+//            }
+//        }
         //doSqlParse(instructions);
 
         //保存已同步的进度

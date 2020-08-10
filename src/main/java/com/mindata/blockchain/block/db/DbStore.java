@@ -50,4 +50,7 @@ public interface DbStore {
      * @return
      */
     List<BlockEntity> getByHash(String hash);
+
+
+    List<BlockEntity> getByOldHash(String encrypt);
 }

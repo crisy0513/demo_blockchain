@@ -41,6 +41,7 @@ import javax.annotation.Resource;
 /**
  * @author wuweifeng wrote on 2018/3/7.
  */
+@ApiIgnore
 @Api(tags = "区块链接口", description = "简单区块链功能接口")
 @RestController
 @RequestMapping("/block")

@@ -5,10 +5,6 @@ package com.mindata.blockchain.socket.common;
  */
 public interface Const {
     /**
-     * 服务器地址
-     */
-    String SERVER = "127.0.0.1";
-    /**
      * 服务器分组名
      */
     String GROUP_NAME = "block_group";

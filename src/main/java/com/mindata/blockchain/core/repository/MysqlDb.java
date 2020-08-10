@@ -19,4 +19,6 @@ public interface MysqlDb extends JpaRepository<BlockEntity, Long> {
     void deleteBySkey(String key);
 
     List<BlockEntity> findByShash(String hash);
+
+    List<BlockEntity> findBySoldhash(String encrypt);
 }

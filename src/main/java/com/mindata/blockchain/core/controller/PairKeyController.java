@@ -1,9 +1,9 @@
 package com.mindata.blockchain.core.controller;
 
+import com.mindata.blockchain.common.algorithm.SM2Utils;
 import com.mindata.blockchain.common.exception.TrustSDKException;
 import com.mindata.blockchain.core.bean.BaseData;
 import com.mindata.blockchain.core.bean.ResultGenerator;
-import com.mindata.blockchain.core.service.PairKeyService;
 import io.swagger.annotations.Api;
 import io.swagger.annotations.ApiOperation;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -19,8 +19,6 @@ import javax.annotation.Resource;
 @RestController
 @RequestMapping("/pairKey")
 public class PairKeyController {
-    @Resource
-    private PairKeyService pairKeyService;
 
     /**
      * 生成公钥私钥
@@ -28,6 +26,6 @@ public class PairKeyController {
     @ApiOperation(value = "区块链公私钥接口", notes = "生成区块链节点公私钥", httpMethod = "GET", response = BaseData.class)
     @GetMapping("/random")
     public BaseData generate() throws TrustSDKException {
-         return ResultGenerator.genSuccessResult(pairKeyService.generate());
+         return ResultGenerator.genSuccessResult(SM2Utils.generateKeyPair());
     }
 }

@@ -32,10 +32,6 @@ public class BlockHeader {
      */
     private long timeStamp;
     /**
-     * 32位随机数
-     */
-    private long nonce;
-    /**
      * 该区块里每条交易信息的hash集合，按顺序来的，通过该hash集合能算出根节点hash
      */
     private List<String> hashList;
@@ -49,7 +45,6 @@ public class BlockHeader {
                 ", publicKey='" + publicKey + '\'' +
                 ", number=" + number +
                 ", timeStamp=" + timeStamp +
-                ", nonce=" + nonce +
                 ", hashList=" + hashList +
                 '}';
     }
@@ -100,14 +95,6 @@ public class BlockHeader {
 
     public void setTimeStamp(long timeStamp) {
         this.timeStamp = timeStamp;
-    }
-
-    public long getNonce() {
-        return nonce;
-    }
-
-    public void setNonce(long nonce) {
-        this.nonce = nonce;
     }
 
     public List<String> getHashList() {

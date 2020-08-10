@@ -3,7 +3,7 @@ package com.mindata.blockchain.block.check.local;
 import cn.hutool.core.util.StrUtil;
 import com.mindata.blockchain.block.Block;
 import com.mindata.blockchain.block.check.BlockChecker;
-import com.mindata.blockchain.common.Sha256;
+import com.mindata.blockchain.common.algorithm.SM3Utils;
 import com.mindata.blockchain.common.exception.TrustSDKException;
 import com.mindata.blockchain.core.manager.DbBlockManager;
 import com.mindata.blockchain.core.manager.PermissionManager;
@@ -124,7 +124,7 @@ public class DbBlockChecker implements BlockChecker {
 			return false;
 		}
 		
-		String hash = Sha256.sha256(block.getBlockHeader().toString() + block.getBlockBody().toString());
+		String hash = SM3Utils.encrypt(block.getBlockHeader().toString() + block.getBlockBody().toString());
 		if(!StrUtil.equals(block.getHash(),hash)) return false;
 		
 		return true;

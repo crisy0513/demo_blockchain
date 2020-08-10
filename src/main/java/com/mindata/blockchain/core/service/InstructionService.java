@@ -5,8 +5,8 @@ import com.mindata.blockchain.block.Instruction;
 import com.mindata.blockchain.block.InstructionReverse;
 import com.mindata.blockchain.block.Operation;
 import com.mindata.blockchain.common.CommonUtil;
-import com.mindata.blockchain.common.Sha256;
-import com.mindata.blockchain.common.TrustSDK;
+import com.mindata.blockchain.common.algorithm.SM2Utils;
+import com.mindata.blockchain.common.algorithm.SM3Utils;
 import com.mindata.blockchain.common.exception.TrustSDKException;
 import com.mindata.blockchain.core.requestbody.InstructionBody;
 import org.springframework.stereotype.Service;
@@ -28,7 +28,7 @@ public class InstructionService {
      *         TrustSDKException
      */
     public boolean checkKeyPair(InstructionBody instructionBody) throws TrustSDKException {
-        return TrustSDK.checkPairKey(instructionBody.getPrivateKey(), instructionBody.getPublicKey());
+        return SM2Utils.checkPairKey(instructionBody.getPrivateKey(), instructionBody.getPublicKey());
     }
 
     /**
@@ -62,9 +62,9 @@ public class InstructionService {
         instruction.setTimeStamp(CommonUtil.getNow());
         String buildStr = getSignString(instruction);
         //设置签名，供其他人验证
-        instruction.setSign(TrustSDK.signString(instructionBody.getPrivateKey(), buildStr));
-        //设置hash，防止篡改
-        instruction.setHash(Sha256.sha256(buildStr));
+        instruction.setSign(SM2Utils.signString(instructionBody.getPrivateKey(),buildStr.getBytes()));
+        //设置hash，
+        instruction.setHash(SM3Utils.encrypt(buildStr));
 
         return instruction;
     }
@@ -98,13 +98,13 @@ public class InstructionService {
         return instructionReverse;
     }
 
-    public boolean checkSign(Instruction instruction) throws TrustSDKException {
+    public boolean checkSign(Instruction instruction){
         String buildStr = getSignString(instruction);
-        return TrustSDK.verifyString(instruction.getPublicKey(), buildStr, instruction.getSign());
+        return SM2Utils.verifyString(instruction.getPublicKey(),buildStr,instruction.getSign());
     }
 
     public boolean checkHash(Instruction instruction) {
         String buildStr = getSignString(instruction);
-        return Sha256.sha256(buildStr).equals(instruction.getHash());
+        return SM3Utils.encrypt(buildStr).equals(instruction.getHash());
     }
 }

@@ -17,6 +17,7 @@ public class BlockEntity {
     private String svalue;
     private String skey;
     private String shash;
+    private String soldhash;
 
     @Override
     public String toString() {
@@ -25,7 +26,16 @@ public class BlockEntity {
                 ", svalue='" + svalue + '\'' +
                 ", skey='" + skey + '\'' +
                 ", shash='" + shash + '\'' +
+                ", soldhash='" + soldhash + '\'' +
                 '}';
+    }
+
+    public String getSoldhash() {
+        return soldhash;
+    }
+
+    public void setSoldhash(String soldhash) {
+        this.soldhash = soldhash;
     }
 
     public Long getId() {

@@ -35,5 +35,12 @@ public class PairKey {
         this.privateKey = privateKey;
     }
 
+    @Override
+    public String toString() {
+        return "PairKey{" +
+                "publicKey='" + publicKey + '\'' +
+                ", privateKey='" + privateKey + '\'' +
+                '}';
+    }
 }
 

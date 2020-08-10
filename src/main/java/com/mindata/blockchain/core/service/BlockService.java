@@ -7,7 +7,7 @@ import com.mindata.blockchain.block.BlockHeader;
 import com.mindata.blockchain.block.Instruction;
 import com.mindata.blockchain.block.merkle.MerkleTree;
 import com.mindata.blockchain.common.CommonUtil;
-import com.mindata.blockchain.common.Sha256;
+import com.mindata.blockchain.common.algorithm.SM3Utils;
 import com.mindata.blockchain.common.exception.TrustSDKException;
 import com.mindata.blockchain.core.manager.DbBlockManager;
 import com.mindata.blockchain.core.manager.PermissionManager;
@@ -101,7 +101,7 @@ public class BlockService {
         Block block = new Block();
         block.setBlockBody(blockBody);
         block.setBlockHeader(blockHeader);
-        block.setHash(Sha256.sha256(blockHeader.toString() + blockBody.toString()));
+        block.setHash(SM3Utils.encrypt(blockHeader.toString() + blockBody.toString()));
         BlockPacket blockPacket = new PacketBuilder<>().setType(PacketType.GENERATE_BLOCK_REQUEST).setBody(new
                 RpcBlockBody(block)).build();
 
